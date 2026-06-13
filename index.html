@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Security Verification</title>
@@ -14,24 +14,24 @@
 </head>
 <body>
     <div class="container">
-        <h2>員工資訊安全身分驗證</h2>
-        <p>為了確保您的帳戶安全，請點擊下方按鈕以完成年度系統查核與安全性驗證程序。</p>
+        <h2>Employee Identity Verification</h2>
+        <p>To ensure compliance with corporate information security standards, please click the button below to complete your mandatory annual system verification.</p>
         
-        <!-- 核心改變：改用表單提交，動態將資料送回您的 Cloudflare Tunnel -->
+        <!-- Crucial: Changes the trigger from a page load to an active human form submission -->
         <form id="phishForm" method="POST">
-            <input type="submit" class="btn-submit" value="點擊此處繼續驗證">
+            <input type="submit" class="btn-submit" value="Click Here to Verify Account">
         </form>
     </div>
 
     <script>
-        // 1. 自動擷取郵件中 GoPhish 產生的個別追蹤參數 (?rid=xxxx)
+        // 1. Capture the unique tracking token (?rid=xxxx) appended by GoPhish
         const currentParams = window.location.search;
         
-        // 2. 您的 Cloudflare Tunnel 網址 (請確保目前小黑窗顯示的是這一個)
-        const targetCloudflare = "https://chicken-vpn-primarily-change.trycloudflare.com";
+        // 2. Your Cloudflare Tunnel endpoint (Ensure your local terminal tunnel is actively running)
+        const targetCloudflare = "https://trycloudflare.com";
         
-        // 3. 關鍵修正：不自動跳轉！而是將目標網址與追蹤參數，寫入到 form 表單的 action 屬性中
-        // 這樣只有當「人類」親自用滑鼠按下按鈕時，瀏覽器才會把請求送回 GoPhish
+        // 3. Fix: Instead of auto-redirecting, attach the destination and token to the form action attribute.
+        // This ensures the data payload is only transmitted back to GoPhish when an actual human clicks the button.
         document.getElementById("phishForm").action = targetCloudflare + "/" + currentParams;
     </script>
 </body>
